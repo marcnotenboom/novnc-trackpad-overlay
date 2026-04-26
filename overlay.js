@@ -49,9 +49,37 @@
       border: 'none', borderRadius: '6px', font: '12px sans-serif',
     });
 
+    // Keyboard button — overlay covers the noVNC sidebar tab, so we need our
+    // own way to summon the soft keyboard. Focusing noVNC's hidden input pops
+    // it up; blurring hides it.
+    var kbd = document.createElement('button');
+    kbd.textContent = 'kbd';
+    Object.assign(kbd.style, {
+      position: 'fixed', top: '8px', right: '76px',
+      zIndex: '100002', padding: '6px 10px',
+      background: 'rgba(124,58,237,0.85)', color: '#fff',
+      border: 'none', borderRadius: '6px', font: '12px sans-serif',
+    });
+    function toggleKbd(e) {
+      if (e) e.stopPropagation();
+      var input = document.getElementById('noVNC_keyboardinput');
+      if (!input) return;
+      if (document.activeElement === input) {
+        input.blur();
+        kbd.style.background = 'rgba(124,58,237,0.85)';
+      } else {
+        input.focus();
+        try { var l = input.value.length; input.setSelectionRange(l, l); } catch (_) {}
+        kbd.style.background = 'rgba(34,197,94,0.85)';
+      }
+    }
+    kbd.addEventListener('click', toggleKbd);
+    kbd.addEventListener('touchstart', function(e) { e.stopPropagation(); }, { passive: true });
+
     document.body.appendChild(overlay);
     document.body.appendChild(dot);
     document.body.appendChild(btn);
+    document.body.appendChild(kbd);
 
     var enabled = true;
     var cx = window.innerWidth / 2;
@@ -122,6 +150,7 @@
       dot.style.display = on ? 'block' : 'none';
       btn.textContent = on ? 'TP on' : 'TP off';
       btn.style.background = on ? 'rgba(124,58,237,0.85)' : 'rgba(82,82,91,0.85)';
+      kbd.style.display = on ? 'block' : 'none';
     }
 
     btn.addEventListener('click', function(e) { e.stopPropagation(); setEnabled(!enabled); });
