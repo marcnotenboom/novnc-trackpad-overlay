@@ -46,7 +46,8 @@ needs to adapt it.
 | 1-finger long press (>500 ms)        | Start drag — release on lift    |
 | 2-finger tap (no movement)           | Right click                     |
 | 2-finger vertical drag               | Scroll                          |
-| Tap "TP off" button (top-right)      | Disable overlay                 |
+| Tap "kbd" button (top-right)         | Pop / hide the on-screen keyboard |
+| Tap "TP" button (top-right)          | Toggle overlay (off → noVNC native touch) |
 
 ## How it works
 
@@ -382,9 +383,9 @@ element's id and z-index in `core/util/events.js`.
   viewport coordinates; on orientation change you may want to re-center
   via `cx = window.innerWidth/2; cy = window.innerHeight/2`.
 * **Soft-keyboard on Android.** Synthesising mouse events doesn't pop up
-  the Android keyboard. Either tap noVNC's own "Show keyboard" sidebar
-  button, or add a hidden `<input>` that you `.focus()` after a tap on a
-  known input area.
+  the keyboard on its own. The overlay solves this with a `kbd` toggle
+  button that focuses (and re-blurs) noVNC's hidden `#noVNC_keyboardinput`
+  textarea, which the OS treats as a real text input.
 
 ## License
 
